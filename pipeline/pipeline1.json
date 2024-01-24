@@ -1,0 +1,48 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflow1",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"pFilename": "sobjects_raw.json"
+							},
+							"sink1": {
+								"outFile": "'sobjects_raw.json'"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"outFile": {
+				"type": "string",
+				"defaultValue": "out.csv"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-01-22T12:05:38Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

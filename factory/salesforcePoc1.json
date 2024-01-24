@@ -1,0 +1,9 @@
+{
+	"name": "salesforcePoc1",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "db029c9a-e9cc-437a-9cda-588ecfc30f60",
+		"tenantId": "fd72a57f-8f25-4477-9caa-8692f415a024"
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"name": "dataSourceRestApiGetToken",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "sfRestSobject",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

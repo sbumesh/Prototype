@@ -1,0 +1,13 @@
+{
+	"name": "sfRestSobject",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://d5w0000050tsiea2-dev-ed.my.salesforce.com/services/oauth2/token",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}

@@ -1,0 +1,25 @@
+{
+	"name": "dsSibjectRestApi",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "sfRestSobject",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"pVerb": {
+				"type": "string",
+				"defaultValue": "sobjects"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@dataset().pVerb",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

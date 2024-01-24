@@ -1,0 +1,66 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Json1",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "flattenoutJson",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureBlobStorage1",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "flatten1"
+				},
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          encoding as string,",
+				"          maxBatchSize as integer,",
+				"          sobjects as (activateable as boolean, createable as boolean, custom as boolean, customSetting as boolean, deepCloneable as boolean, deletable as boolean, deprecatedAndHidden as boolean, feedEnabled as boolean, hasSubtypes as boolean, isInterface as boolean, isSubtype as boolean, keyPrefix as string, label as string, labelPlural as string, layoutable as boolean, mergeable as boolean, mruEnabled as boolean, name as string, queryable as boolean, replicateable as boolean, retrieveable as boolean, searchable as boolean, triggerable as boolean, undeletable as boolean, updateable as boolean, urls as (rowTemplate as string, describe as string, sobject as string))[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> source1",
+				"source1 foldDown(unroll(sobjects, sobjects),",
+				"     mapColumn(",
+				"          activateable = sobjects.activateable,",
+				"          createable = sobjects.createable,",
+				"          custom = sobjects.custom,",
+				"          label = sobjects.label,",
+				"          labelPlural = sobjects.labelPlural,",
+				"          name = sobjects.name",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> flatten1",
+				"flatten1 filter(name==name) ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}
