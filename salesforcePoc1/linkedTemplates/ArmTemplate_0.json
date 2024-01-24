@@ -1,0 +1,923 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "salesforcePoc1"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"sfRestSobject_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://d5w0000050tsiea2-dev-ed.my.salesforce.com/services/oauth2/token"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sfRestSobject')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('sfRestSobject_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Json1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"pFilename": {
+						"type": "string",
+						"defaultValue": "sobjects_raw.json"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().pFilename",
+							"type": "Expression"
+						},
+						"folderPath": "rawJsonInput",
+						"container": "contsalesforce"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"encoding": {
+							"type": "string"
+						},
+						"maxBatchSize": {
+							"type": "integer"
+						},
+						"sobjects": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"activateable": {
+										"type": "boolean"
+									},
+									"createable": {
+										"type": "boolean"
+									},
+									"custom": {
+										"type": "boolean"
+									},
+									"customSetting": {
+										"type": "boolean"
+									},
+									"deepCloneable": {
+										"type": "boolean"
+									},
+									"deletable": {
+										"type": "boolean"
+									},
+									"deprecatedAndHidden": {
+										"type": "boolean"
+									},
+									"feedEnabled": {
+										"type": "boolean"
+									},
+									"hasSubtypes": {
+										"type": "boolean"
+									},
+									"isInterface": {
+										"type": "boolean"
+									},
+									"isSubtype": {
+										"type": "boolean"
+									},
+									"keyPrefix": {
+										"type": "string"
+									},
+									"label": {
+										"type": "string"
+									},
+									"labelPlural": {
+										"type": "string"
+									},
+									"layoutable": {
+										"type": "boolean"
+									},
+									"mergeable": {
+										"type": "boolean"
+									},
+									"mruEnabled": {
+										"type": "boolean"
+									},
+									"name": {
+										"type": "string"
+									},
+									"queryable": {
+										"type": "boolean"
+									},
+									"replicateable": {
+										"type": "boolean"
+									},
+									"retrieveable": {
+										"type": "boolean"
+									},
+									"searchable": {
+										"type": "boolean"
+									},
+									"triggerable": {
+										"type": "boolean"
+									},
+									"undeletable": {
+										"type": "boolean"
+									},
+									"updateable": {
+										"type": "boolean"
+									},
+									"urls": {
+										"type": "object",
+										"properties": {
+											"rowTemplate": {
+												"type": "string"
+											},
+											"describe": {
+												"type": "string"
+											},
+											"sobject": {
+												"type": "string"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataSourceRestApiGetToken')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "sfRestSobject",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/sfRestSobject')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dsSibjectRestApi')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "sfRestSobject",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"pVerb": {
+						"type": "string",
+						"defaultValue": "sobjects"
+					}
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": {
+						"value": "@dataset().pVerb",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/sfRestSobject')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/flattenoutJson')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"outFile": {
+						"type": "string",
+						"defaultValue": "out.csv"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().outFile",
+							"type": "Expression"
+						},
+						"folderPath": "FlattenedJsonOut",
+						"container": "contsalesforce"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/data Flow Sf Get Rest Token')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "dataSourceRestApiGetToken",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "flattenoutJson",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     httpMethod: 'POST',",
+						"     body: ('grant_type=password&client_id=3MVG95jctIhbyCpo.M5oBPNmMoXIoJEdLTtD9y5UqEWqmzhWCzLySRVZ.SS0Kr12DoRR_3nfxftySKlT0sMnx&client_secret=05393E3026C411587F41159D41D8FD848842A3511555425DD7288DB3D91BB9D3&username=Umesh.Srinivasaiah@sita.aero&password=S@lesForce!9'),",
+						"     timeout: 30,",
+						"     requestInterval: 0,",
+						"     paginationRules: ['supportRFC5988' -> 'true'],",
+						"     responseFormat: ['type' -> 'json', 'documentForm' -> 'documentPerLine']) ~> source1",
+						"source1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/dataSourceRestApiGetToken')]",
+				"[concat(variables('factoryId'), '/datasets/flattenoutJson')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Json1",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "flattenoutJson",
+								"type": "DatasetReference"
+							},
+							"name": "sink1",
+							"rejectedDataLinkedService": {
+								"referenceName": "AzureBlobStorage1",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [
+						{
+							"name": "flatten1"
+						},
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          encoding as string,",
+						"          maxBatchSize as integer,",
+						"          sobjects as (activateable as boolean, createable as boolean, custom as boolean, customSetting as boolean, deepCloneable as boolean, deletable as boolean, deprecatedAndHidden as boolean, feedEnabled as boolean, hasSubtypes as boolean, isInterface as boolean, isSubtype as boolean, keyPrefix as string, label as string, labelPlural as string, layoutable as boolean, mergeable as boolean, mruEnabled as boolean, name as string, queryable as boolean, replicateable as boolean, retrieveable as boolean, searchable as boolean, triggerable as boolean, undeletable as boolean, updateable as boolean, urls as (rowTemplate as string, describe as string, sobject as string))[]",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> source1",
+						"source1 foldDown(unroll(sobjects, sobjects),",
+						"     mapColumn(",
+						"          activateable = sobjects.activateable,",
+						"          createable = sobjects.createable,",
+						"          custom = sobjects.custom,",
+						"          label = sobjects.label,",
+						"          labelPlural = sobjects.labelPlural,",
+						"          name = sobjects.name",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> flatten1",
+						"flatten1 filter(name==name) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Json1')]",
+				"[concat(variables('factoryId'), '/datasets/flattenoutJson')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dfParseJsonSobject')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Json1",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "flattenoutJson",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "flattenJsonSobjhectList"
+						},
+						{
+							"name": "filterForCustomObjects"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     outFile as string,",
+						"     pFilename as string ('sobjects_raw.json')",
+						"}",
+						"source(output(",
+						"          encoding as string,",
+						"          maxBatchSize as integer,",
+						"          sobjects as (activateable as boolean, createable as boolean, custom as boolean, customSetting as boolean, deepCloneable as boolean, deletable as boolean, deprecatedAndHidden as boolean, feedEnabled as boolean, hasSubtypes as boolean, isInterface as boolean, isSubtype as boolean, keyPrefix as string, label as string, labelPlural as string, layoutable as boolean, mergeable as boolean, mruEnabled as boolean, name as string, queryable as boolean, replicateable as boolean, retrieveable as boolean, searchable as boolean, triggerable as boolean, undeletable as boolean, updateable as boolean, urls as (rowTemplate as string, describe as string, sobject as string))[]",
+						"     ),",
+						"     allowSchemaDrift: false,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> source1",
+						"source1 foldDown(unroll(sobjects, sobjects),",
+						"     mapColumn(",
+						"          label = sobjects.label,",
+						"          custom = sobjects.custom,",
+						"          name = sobjects.name",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flattenJsonSobjhectList",
+						"flattenJsonSobjhectList filter(instr(name ,    '__c') > 0) ~> filterForCustomObjects",
+						"filterForCustomObjects sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:[(concat($outFile,'.csv'))],",
+						"     truncate: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     mapColumn(",
+						"          label,",
+						"          name,",
+						"          custom",
+						"     ),",
+						"     partitionBy('hash', 1)) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Json1')]",
+				"[concat(variables('factoryId'), '/datasets/flattenoutJson')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow1",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {
+										"pFilename": "sobjects_raw.json"
+									},
+									"sink1": {
+										"outFile": "'sobjects_raw.json'"
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"outFile": {
+						"type": "string",
+						"defaultValue": "out.csv"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-01-22T12:05:38Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/sobjectRestAPi')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"Authorization": {
+										"value": "@concat('Bearer ' ,pipeline().parameters.pAccessToken)",
+										"type": "Expression"
+									}
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "dsSibjectRestApi",
+								"type": "DatasetReference",
+								"parameters": {
+									"pVerb": {
+										"value": "@pipeline().parameters.pVerb",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Json1",
+								"type": "DatasetReference",
+								"parameters": {
+									"pFilename": {
+										"value": "@concat(replace(pipeline().parameters.pVerb,'/','_') ,'raw.json')",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "execute Flatten Json Data flow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Copy data1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dfParseJsonSobject",
+								"type": "DataFlowReference",
+								"parameters": {
+									"outFile": {
+										"value": "'@{replace(pipeline().parameters.pVerb,'/','_') }'",
+										"type": "Expression"
+									},
+									"pFilename": {
+										"value": "'@{pipeline().parameters.outFile}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"source1": {
+										"pFilename": {
+											"value": "@pipeline().parameters.pFilename",
+											"type": "Expression"
+										}
+									},
+									"sink1": {
+										"outFile": {
+											"value": "@concat(pipeline().parameters.outFile,'.csv')",
+											"type": "Expression"
+										}
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"outFile": {
+						"type": "string",
+						"defaultValue": "out.csv"
+					},
+					"pFilename": {
+						"type": "string",
+						"defaultValue": "Sobject.json"
+					},
+					"pVerb": {
+						"type": "string",
+						"defaultValue": "Account/describe"
+					},
+					"pAccessToken": {
+						"type": "string",
+						"defaultValue": "00D5w0000050TSI!AQQAQCoe8Pi4XezqXgOjWctoKfGNE.EE_xy9yxorQwsJscazgyON0DiJHtpCzvLiySzUDvHldMRH_w40fk6tmfLMn8zH725s"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-01-22T12:05:38Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/dsSibjectRestApi')]",
+				"[concat(variables('factoryId'), '/datasets/Json1')]",
+				"[concat(variables('factoryId'), '/dataflows/dfParseJsonSobject')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/salesforcegetTo0ken')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Web1",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/x-www-form-urlencoded"
+							},
+							"url": {
+								"value": "@pipeline().parameters.url",
+								"type": "Expression"
+							},
+							"body": {
+								"value": "@pipeline().parameters.body",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set variable entire Json string",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Web1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "jsonString",
+							"value": {
+								"value": "@{activity('Web1').output}",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "set variable accesstoken",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Web1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "AccessToken",
+							"value": {
+								"value": "@activity('Web1').output.access_token",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "pass token and store  json",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "set variable accesstoken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "sobjectRestAPi",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"outFile": {
+									"value": "@concat(pipeline().parameters.pVerb,'Sobject.json')",
+									"type": "Expression"
+								},
+								"pVerb": {
+									"value": "@pipeline().parameters.pVerb",
+									"type": "Expression"
+								},
+								"pAccessToken": {
+									"value": "@variables('AccessToken')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Copy data2",
+						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "set variable accesstoken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"additionalColumns": [
+									{
+										"name": "access_key",
+										"value": {
+											"value": "@variables('AccessToken')",
+											"type": "Expression"
+										}
+									}
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings",
+									"copyBehavior": {
+										"value": "@variables('AccessToken')",
+										"type": "Expression"
+									}
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "flattenoutJson",
+								"type": "DatasetReference",
+								"parameters": {
+									"outFile": "Key.csv"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "flattenoutJson",
+								"type": "DatasetReference",
+								"parameters": {
+									"outFile": "key1.csv"
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"url": {
+						"type": "string",
+						"defaultValue": "https://d5w0000050tsiea2-dev-ed.my.salesforce.com/services/oauth2/token"
+					},
+					"body": {
+						"type": "string",
+						"defaultValue": "grant_type=password&client_id=3MVG95jctIhbyCpo.M5oBPNmMoXIoJEdLTtD9y5UqEWqmzhWCzLySRVZ.SS0Kr12DoRR_3nfxftySKlT0sMnx&client_secret=05393E3026C411587F41159D41D8FD848842A3511555425DD7288DB3D91BB9D3&username=Umesh.Srinivasaiah@sita.aero&password=S@lesForce!9"
+					},
+					"pVerb": {
+						"type": "string",
+						"defaultValue": "Account/describe"
+					}
+				},
+				"variables": {
+					"AccessToken": {
+						"type": "String"
+					},
+					"jsonString": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "salesforce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-01-17T23:12:01Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/sobjectRestAPi')]",
+				"[concat(variables('factoryId'), '/datasets/flattenoutJson')]"
+			]
+		}
+	]
+}
