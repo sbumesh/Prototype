@@ -1,5 +1,5 @@
 {
-	"name": "salesforcegetTo0ken2",
+	"name": "pl_Salesforce_Store_Token_And_sobject",
 	"properties": {
 		"activities": [
 			{
@@ -116,100 +116,6 @@
 				}
 			},
 			{
-				"name": "ForEach1",
-				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "set variable accesstoken",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@pipeline().parameters.sObjectList",
-						"type": "Expression"
-					},
-					"isSequential": true,
-					"activities": [
-						{
-							"name": "sobject describe",
-							"type": "WebActivity",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"method": "GET",
-								"headers": {
-									"Accept": "application/json",
-									"Authorization": {
-										"value": "@concat('Bearer ' , variables('AccessToken')    )",
-										"type": "Expression"
-									}
-								},
-								"url": {
-									"value": "@concat('https://d5w0000050tsiea2-dev-ed.my.salesforce.com/services/data/v48.0/sobjects/',item(),'/describe')",
-									"type": "Expression"
-								},
-								"body": {
-									"value": "@pipeline().parameters.body",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "write Key Json file to output_copy1",
-							"type": "WebActivity",
-							"dependsOn": [
-								{
-									"activity": "sobject describe",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"method": "PUT",
-								"headers": {
-									"x-ms-version": "2017-11-09",
-									"x-ms-blob-type": "BlockBlob"
-								},
-								"url": {
-									"value": "@replace('https://salesforce69.blob.core.windows.net/contsalesforce/token.json', 'token.json',item())",
-									"type": "Expression"
-								},
-								"body": {
-									"value": "@activity('sobject describe').output",
-									"type": "Expression"
-								},
-								"authentication": {
-									"type": "MSI",
-									"resource": "https://storage.azure.com"
-								}
-							}
-						}
-					]
-				}
-			},
-			{
 				"name": "write Key Json file to output",
 				"type": "WebActivity",
 				"dependsOn": [
@@ -278,7 +184,7 @@
 						"type": "Expression"
 					},
 					"body": {
-						"value": "@activity('get lsit of Sobject').output",
+						"value": "@replace(activity('get lsit of Sobject').output,'\\n','')",
 						"type": "Expression"
 					},
 					"authentication": {
