@@ -1,0 +1,647 @@
+{
+	"name": "Json2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "sobjects.json",
+				"container": "contsalesforce"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"actionOverrides": {
+					"type": "array"
+				},
+				"activateable": {
+					"type": "boolean"
+				},
+				"childRelationships": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"cascadeDelete": {
+								"type": "boolean"
+							},
+							"childSObject": {
+								"type": "string"
+							},
+							"deprecatedAndHidden": {
+								"type": "boolean"
+							},
+							"field": {
+								"type": "string"
+							},
+							"junctionIdListNames": {
+								"type": "array"
+							},
+							"junctionReferenceTo": {
+								"type": "array"
+							},
+							"relationshipName": {
+								"type": "null"
+							},
+							"restrictedDelete": {
+								"type": "boolean"
+							}
+						}
+					}
+				},
+				"compactLayoutable": {
+					"type": "boolean"
+				},
+				"createable": {
+					"type": "boolean"
+				},
+				"custom": {
+					"type": "boolean"
+				},
+				"customSetting": {
+					"type": "boolean"
+				},
+				"deepCloneable": {
+					"type": "boolean"
+				},
+				"defaultImplementation": {
+					"type": "null"
+				},
+				"deletable": {
+					"type": "boolean"
+				},
+				"deprecatedAndHidden": {
+					"type": "boolean"
+				},
+				"extendedBy": {
+					"type": "null"
+				},
+				"extendsInterfaces": {
+					"type": "null"
+				},
+				"feedEnabled": {
+					"type": "boolean"
+				},
+				"fields": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"aggregatable": {
+								"type": "boolean"
+							},
+							"aiPredictionField": {
+								"type": "boolean"
+							},
+							"autoNumber": {
+								"type": "boolean"
+							},
+							"byteLength": {
+								"type": "integer"
+							},
+							"calculated": {
+								"type": "boolean"
+							},
+							"calculatedFormula": {
+								"type": "null"
+							},
+							"cascadeDelete": {
+								"type": "boolean"
+							},
+							"caseSensitive": {
+								"type": "boolean"
+							},
+							"compoundFieldName": {
+								"type": "null"
+							},
+							"controllerName": {
+								"type": "null"
+							},
+							"createable": {
+								"type": "boolean"
+							},
+							"custom": {
+								"type": "boolean"
+							},
+							"defaultValue": {
+								"type": "null"
+							},
+							"defaultValueFormula": {
+								"type": "null"
+							},
+							"defaultedOnCreate": {
+								"type": "boolean"
+							},
+							"dependentPicklist": {
+								"type": "boolean"
+							},
+							"deprecatedAndHidden": {
+								"type": "boolean"
+							},
+							"digits": {
+								"type": "integer"
+							},
+							"displayLocationInDecimal": {
+								"type": "boolean"
+							},
+							"encrypted": {
+								"type": "boolean"
+							},
+							"externalId": {
+								"type": "boolean"
+							},
+							"extraTypeInfo": {
+								"type": "null"
+							},
+							"filterable": {
+								"type": "boolean"
+							},
+							"filteredLookupInfo": {
+								"type": "null"
+							},
+							"formulaTreatNullNumberAsZero": {
+								"type": "boolean"
+							},
+							"groupable": {
+								"type": "boolean"
+							},
+							"highScaleNumber": {
+								"type": "boolean"
+							},
+							"htmlFormatted": {
+								"type": "boolean"
+							},
+							"idLookup": {
+								"type": "boolean"
+							},
+							"inlineHelpText": {
+								"type": "null"
+							},
+							"label": {
+								"type": "string"
+							},
+							"length": {
+								"type": "integer"
+							},
+							"mask": {
+								"type": "null"
+							},
+							"maskType": {
+								"type": "null"
+							},
+							"name": {
+								"type": "string"
+							},
+							"nameField": {
+								"type": "boolean"
+							},
+							"namePointing": {
+								"type": "boolean"
+							},
+							"nillable": {
+								"type": "boolean"
+							},
+							"permissionable": {
+								"type": "boolean"
+							},
+							"picklistValues": {
+								"type": "array"
+							},
+							"polymorphicForeignKey": {
+								"type": "boolean"
+							},
+							"precision": {
+								"type": "integer"
+							},
+							"queryByDistance": {
+								"type": "boolean"
+							},
+							"referenceTargetField": {
+								"type": "null"
+							},
+							"referenceTo": {
+								"type": "array"
+							},
+							"relationshipName": {
+								"type": "null"
+							},
+							"relationshipOrder": {
+								"type": "null"
+							},
+							"restrictedDelete": {
+								"type": "boolean"
+							},
+							"restrictedPicklist": {
+								"type": "boolean"
+							},
+							"scale": {
+								"type": "integer"
+							},
+							"searchPrefilterable": {
+								"type": "boolean"
+							},
+							"soapType": {
+								"type": "string"
+							},
+							"sortable": {
+								"type": "boolean"
+							},
+							"type": {
+								"type": "string"
+							},
+							"unique": {
+								"type": "boolean"
+							},
+							"updateable": {
+								"type": "boolean"
+							},
+							"writeRequiresMasterRead": {
+								"type": "boolean"
+							}
+						}
+					}
+				},
+				"hasSubtypes": {
+					"type": "boolean"
+				},
+				"implementedBy": {
+					"type": "null"
+				},
+				"implementsInterfaces": {
+					"type": "null"
+				},
+				"isInterface": {
+					"type": "boolean"
+				},
+				"isSubtype": {
+					"type": "boolean"
+				},
+				"keyPrefix": {
+					"type": "string"
+				},
+				"label": {
+					"type": "string"
+				},
+				"labelPlural": {
+					"type": "string"
+				},
+				"layoutable": {
+					"type": "boolean"
+				},
+				"listviewable": {
+					"type": "null"
+				},
+				"lookupLayoutable": {
+					"type": "null"
+				},
+				"mergeable": {
+					"type": "boolean"
+				},
+				"mruEnabled": {
+					"type": "boolean"
+				},
+				"name": {
+					"type": "string"
+				},
+				"namedLayoutInfos": {
+					"type": "array"
+				},
+				"networkScopeFieldName": {
+					"type": "null"
+				},
+				"queryable": {
+					"type": "boolean"
+				},
+				"recordTypeInfos": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"active": {
+								"type": "boolean"
+							},
+							"available": {
+								"type": "boolean"
+							},
+							"defaultRecordTypeMapping": {
+								"type": "boolean"
+							},
+							"developerName": {
+								"type": "string"
+							},
+							"master": {
+								"type": "boolean"
+							},
+							"name": {
+								"type": "string"
+							},
+							"recordTypeId": {
+								"type": "string"
+							},
+							"urls": {
+								"type": "object",
+								"properties": {
+									"layout": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				},
+				"replicateable": {
+					"type": "boolean"
+				},
+				"retrieveable": {
+					"type": "boolean"
+				},
+				"searchLayoutable": {
+					"type": "boolean"
+				},
+				"searchable": {
+					"type": "boolean"
+				},
+				"sobjectDescribeOption": {
+					"type": "string"
+				},
+				"supportedScopes": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"label": {
+								"type": "string"
+							},
+							"name": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"triggerable": {
+					"type": "boolean"
+				},
+				"undeletable": {
+					"type": "boolean"
+				},
+				"updateable": {
+					"type": "boolean"
+				},
+				"urls": {
+					"type": "object",
+					"properties": {
+						"compactLayouts": {
+							"type": "string"
+						},
+						"rowTemplate": {
+							"type": "string"
+						},
+						"approvalLayouts": {
+							"type": "string"
+						},
+						"uiDetailTemplate": {
+							"type": "string"
+						},
+						"uiEditTemplate": {
+							"type": "string"
+						},
+						"listviews": {
+							"type": "string"
+						},
+						"describe": {
+							"type": "string"
+						},
+						"uiNewRecord": {
+							"type": "string"
+						},
+						"quickActions": {
+							"type": "string"
+						},
+						"layouts": {
+							"type": "string"
+						},
+						"sobject": {
+							"type": "string"
+						}
+					}
+				},
+				"encoding": {
+					"type": "string"
+				},
+				"maxBatchSize": {
+					"type": "integer"
+				},
+				"sobjects": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"activateable": {
+								"type": "boolean"
+							},
+							"createable": {
+								"type": "boolean"
+							},
+							"custom": {
+								"type": "boolean"
+							},
+							"customSetting": {
+								"type": "boolean"
+							},
+							"deepCloneable": {
+								"type": "boolean"
+							},
+							"deletable": {
+								"type": "boolean"
+							},
+							"deprecatedAndHidden": {
+								"type": "boolean"
+							},
+							"feedEnabled": {
+								"type": "boolean"
+							},
+							"hasSubtypes": {
+								"type": "boolean"
+							},
+							"isInterface": {
+								"type": "boolean"
+							},
+							"isSubtype": {
+								"type": "boolean"
+							},
+							"keyPrefix": {
+								"type": "string"
+							},
+							"label": {
+								"type": "string"
+							},
+							"labelPlural": {
+								"type": "string"
+							},
+							"layoutable": {
+								"type": "boolean"
+							},
+							"mergeable": {
+								"type": "boolean"
+							},
+							"mruEnabled": {
+								"type": "boolean"
+							},
+							"name": {
+								"type": "string"
+							},
+							"queryable": {
+								"type": "boolean"
+							},
+							"replicateable": {
+								"type": "boolean"
+							},
+							"retrieveable": {
+								"type": "boolean"
+							},
+							"searchable": {
+								"type": "boolean"
+							},
+							"triggerable": {
+								"type": "boolean"
+							},
+							"undeletable": {
+								"type": "boolean"
+							},
+							"updateable": {
+								"type": "boolean"
+							},
+							"urls": {
+								"type": "object",
+								"properties": {
+									"rowTemplate": {
+										"type": "string"
+									},
+									"describe": {
+										"type": "string"
+									},
+									"sobject": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				},
+				"ADFWebActivityResponseHeaders": {
+					"type": "object",
+					"properties": {
+						"Date": {
+							"type": "string"
+						},
+						"Set-Cookie": {
+							"type": "string"
+						},
+						"Strict-Transport-Security": {
+							"type": "string"
+						},
+						"X-Content-Type-Options": {
+							"type": "string"
+						},
+						"X-XSS-Protection": {
+							"type": "string"
+						},
+						"X-Robots-Tag": {
+							"type": "string"
+						},
+						"Cache-Control": {
+							"type": "string"
+						},
+						"Sforce-Limit-Info": {
+							"type": "string"
+						},
+						"ETag": {
+							"type": "string"
+						},
+						"Vary": {
+							"type": "string"
+						},
+						"Transfer-Encoding": {
+							"type": "string"
+						},
+						"Last-Modified": {
+							"type": "string"
+						},
+						"Content-Type": {
+							"type": "string"
+						},
+						"X-ReadOnlyMode": {
+							"type": "string"
+						},
+						"Expires": {
+							"type": "string"
+						}
+					}
+				},
+				"effectiveIntegrationRuntime": {
+					"type": "string"
+				},
+				"executionDuration": {
+					"type": "integer"
+				},
+				"durationInQueue": {
+					"type": "object",
+					"properties": {
+						"integrationRuntimeQueue": {
+							"type": "integer"
+						}
+					}
+				},
+				"billingReference": {
+					"type": "object",
+					"properties": {
+						"activityType": {
+							"type": "string"
+						},
+						"billableDuration": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"meterType": {
+										"type": "string"
+									},
+									"duration": {
+										"type": "number"
+									},
+									"unit": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				},
+				"access_token": {
+					"type": "string"
+				},
+				"instance_url": {
+					"type": "string"
+				},
+				"id": {
+					"type": "string"
+				},
+				"token_type": {
+					"type": "string"
+				},
+				"issued_at": {
+					"type": "string"
+				},
+				"signature": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

@@ -16,12 +16,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "dataflow1",
+						"referenceName": "dfParseJsonSobject_copy1",
 						"type": "DataFlowReference",
+						"parameters": {
+							"pFilename": "'sobjects_raw.json'"
+						},
 						"datasetParameters": {
-							"source1": {
-								"pFilename": "sobjects_raw.json"
-							},
 							"sink1": {
 								"outFile": "'sobjects_raw.json'"
 							}

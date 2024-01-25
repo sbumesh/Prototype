@@ -1,0 +1,124 @@
+{
+	"name": "dfParseJsonSobject_copy1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Json2",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "flattenoutJson",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "flattenJsonSobjhectList"
+				},
+				{
+					"name": "filterForCustomObjects"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     outFile as string,",
+				"     pFilename as string ('sobjects_raw.json')",
+				"}",
+				"source(output(",
+				"          actionOverrides as string[],",
+				"          activateable as boolean,",
+				"          childRelationships as (cascadeDelete as boolean, childSObject as string, deprecatedAndHidden as boolean, field as string, junctionIdListNames as string[], junctionReferenceTo as string[], relationshipName as string, restrictedDelete as boolean)[],",
+				"          compactLayoutable as boolean,",
+				"          createable as boolean,",
+				"          custom as boolean,",
+				"          customSetting as boolean,",
+				"          deepCloneable as boolean,",
+				"          defaultImplementation as string,",
+				"          deletable as boolean,",
+				"          deprecatedAndHidden as boolean,",
+				"          extendedBy as string,",
+				"          extendsInterfaces as string,",
+				"          feedEnabled as boolean,",
+				"          fields as (aggregatable as boolean, aiPredictionField as boolean, autoNumber as boolean, byteLength as integer, calculated as boolean, calculatedFormula as string, cascadeDelete as boolean, caseSensitive as boolean, compoundFieldName as string, controllerName as string, createable as boolean, custom as boolean, defaultValue as string, defaultValueFormula as string, defaultedOnCreate as boolean, dependentPicklist as boolean, deprecatedAndHidden as boolean, digits as integer, displayLocationInDecimal as boolean, encrypted as boolean, externalId as boolean, extraTypeInfo as string, filterable as boolean, filteredLookupInfo as string, formulaTreatNullNumberAsZero as boolean, groupable as boolean, highScaleNumber as boolean, htmlFormatted as boolean, idLookup as boolean, inlineHelpText as string, label as string, length as integer, mask as string, maskType as string, name as string, nameField as boolean, namePointing as boolean, nillable as boolean, permissionable as boolean, picklistValues as string[], polymorphicForeignKey as boolean, precision as integer, queryByDistance as boolean, referenceTargetField as string, referenceTo as string[], relationshipName as string, relationshipOrder as string, restrictedDelete as boolean, restrictedPicklist as boolean, scale as integer, searchPrefilterable as boolean, soapType as string, sortable as boolean, type as string, unique as boolean, updateable as boolean, writeRequiresMasterRead as boolean)[],",
+				"          hasSubtypes as boolean,",
+				"          implementedBy as string,",
+				"          implementsInterfaces as string,",
+				"          isInterface as boolean,",
+				"          isSubtype as boolean,",
+				"          keyPrefix as string,",
+				"          label as string,",
+				"          labelPlural as string,",
+				"          layoutable as boolean,",
+				"          listviewable as string,",
+				"          lookupLayoutable as string,",
+				"          mergeable as boolean,",
+				"          mruEnabled as boolean,",
+				"          name as string,",
+				"          namedLayoutInfos as string[],",
+				"          networkScopeFieldName as string,",
+				"          queryable as boolean,",
+				"          recordTypeInfos as (active as boolean, available as boolean, defaultRecordTypeMapping as boolean, developerName as string, master as boolean, name as string, recordTypeId as string, urls as (layout as string))[],",
+				"          replicateable as boolean,",
+				"          retrieveable as boolean,",
+				"          searchLayoutable as boolean,",
+				"          searchable as boolean,",
+				"          sobjectDescribeOption as string,",
+				"          supportedScopes as (label as string, name as string)[],",
+				"          triggerable as boolean,",
+				"          undeletable as boolean,",
+				"          updateable as boolean,",
+				"          urls as (compactLayouts as string, rowTemplate as string, approvalLayouts as string, uiDetailTemplate as string, uiEditTemplate as string, listviews as string, describe as string, uiNewRecord as string, quickActions as string, layouts as string, sobject as string),",
+				"          encoding as string,",
+				"          maxBatchSize as integer,",
+				"          sobjects as (activateable as boolean, createable as boolean, custom as boolean, customSetting as boolean, deepCloneable as boolean, deletable as boolean, deprecatedAndHidden as boolean, feedEnabled as boolean, hasSubtypes as boolean, isInterface as boolean, isSubtype as boolean, keyPrefix as string, label as string, labelPlural as string, layoutable as boolean, mergeable as boolean, mruEnabled as boolean, name as string, queryable as boolean, replicateable as boolean, retrieveable as boolean, searchable as boolean, triggerable as boolean, undeletable as boolean, updateable as boolean, urls as (rowTemplate as string, describe as string, sobject as string))[],",
+				"          ADFWebActivityResponseHeaders as (Date as string, {Set-Cookie} as string, {Strict-Transport-Security} as string, {X-Content-Type-Options} as string, {X-XSS-Protection} as string, {X-Robots-Tag} as string, {Cache-Control} as string, {Sforce-Limit-Info} as string, ETag as string, Vary as string, {Transfer-Encoding} as string, {Last-Modified} as string, {Content-Type} as string, {X-ReadOnlyMode} as string, Expires as string),",
+				"          effectiveIntegrationRuntime as string,",
+				"          executionDuration as integer,",
+				"          durationInQueue as (integrationRuntimeQueue as integer),",
+				"          billingReference as (activityType as string, billableDuration as (meterType as string, duration as double, unit as string)[]),",
+				"          access_token as string,",
+				"          instance_url as string,",
+				"          id as string,",
+				"          token_type as string,",
+				"          issued_at as string,",
+				"          signature as string",
+				"     ),",
+				"     allowSchemaDrift: false,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> source1",
+				"source1 foldDown(unroll(sobjects, sobjects),",
+				"     mapColumn(",
+				"          label = sobjects.label,",
+				"          custom = sobjects.custom,",
+				"          name = sobjects.name",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flattenJsonSobjhectList",
+				"flattenJsonSobjhectList filter(instr(name ,    '__c') > 0) ~> filterForCustomObjects",
+				"filterForCustomObjects sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:[(concat($outFile,'.csv'))],",
+				"     truncate: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          label,",
+				"          name,",
+				"          custom",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}
