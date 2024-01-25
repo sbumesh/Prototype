@@ -21,7 +21,7 @@
 						"x-ms-blob-type": "BlockBlob"
 					},
 					"url": {
-						"value": "@replace(https://salesforce69.blob.core.windows.net/contsalesforce/sobjects.json,'sobjects',pFileName)",
+						"value": "@replace('https://salesforce69.blob.core.windows.net/contsalesforce/sobjects.json','sobjects',pipeline().parameters.pFileName)",
 						"type": "Expression"
 					},
 					"body": {
