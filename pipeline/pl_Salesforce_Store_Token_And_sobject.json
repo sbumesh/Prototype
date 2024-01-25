@@ -200,7 +200,7 @@
 				"typeProperties": {
 					"variableName": "jsonSobjectList",
 					"value": {
-						"value": "@replace(activity('get lsit of Sobject').output.value[0],'\\n','')",
+						"value": "@replace(activity('get lsit of Sobject').output.sobjects[0],'\\n','')",
 						"type": "Expression"
 					}
 				}
