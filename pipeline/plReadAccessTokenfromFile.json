@@ -1,0 +1,174 @@
+{
+	"name": "plReadAccessTokenfromFile",
+	"properties": {
+		"activities": [
+			{
+				"name": "read json accessfile",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"x-ms-version": "2017-11-09",
+						"x-ms-blob-type": "BlockBlob"
+					},
+					"url": "https://salesforce69.blob.core.windows.net/contsalesforce/token.json",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://storage.azure.com"
+					}
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "read json accessfile",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "vAccessToken",
+					"value": {
+						"value": "@activity('read json accessfile').output.access_token",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.pSobjectList",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "sobject describe",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"headers": {
+									"Accept": "application/json",
+									"Authorization": {
+										"value": "@concat('Bearer ' ,variables('vAccessToken')    )",
+										"type": "Expression"
+									}
+								},
+								"url": {
+									"value": "@concat('https://d5w0000050tsiea2-dev-ed.my.salesforce.com/services/data/v48.0/sobjects/',item(),'/describe')",
+									"type": "Expression"
+								},
+								"body": {
+									"value": "@pipeline().parameters.body",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "write Sobject descrive json to Blob",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "sobject describe",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "PUT",
+								"headers": {
+									"x-ms-version": "2017-11-09",
+									"x-ms-blob-type": "BlockBlob"
+								},
+								"url": {
+									"value": "@replace('https://salesforce69.blob.core.windows.net/contsalesforce/token12.json' ,'token12' , item())",
+									"type": "Expression"
+								},
+								"body": {
+									"value": "@activity('sobject describe').output",
+									"type": "Expression"
+								},
+								"authentication": {
+									"type": "MSI",
+									"resource": "https://storage.azure.com"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"pWebFileName": {
+				"type": "string",
+				"defaultValue": "text"
+			},
+			"pSobjectList": {
+				"type": "array",
+				"defaultValue": [
+					"Account",
+					"Contact"
+				]
+			},
+			"body": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"vAccessToken": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "salesforce"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-01-25T01:53:27Z"
+	}
+}
