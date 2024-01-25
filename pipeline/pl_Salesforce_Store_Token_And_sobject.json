@@ -194,8 +194,8 @@
 				}
 			},
 			{
-				"name": "write Key Json file to output_copy1",
-				"type": "WebActivity",
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
 						"activity": "Set variable entire Json string",
@@ -204,31 +204,19 @@
 						]
 					}
 				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"method": "PUT",
-					"headers": {
-						"x-ms-version": "2017-11-09",
-						"x-ms-blob-type": "BlockBlob"
+					"pipeline": {
+						"referenceName": "Pl_StoreJSonFile_removeLineFeed_template",
+						"type": "PipelineReference"
 					},
-					"url": {
-						"value": "https://salesforce69.blob.core.windows.net/contsalesforce/tokenflat.json",
-						"type": "Expression"
-					},
-					"body": {
-						"value": "@replace(variables('jsonString'),'\\n','')",
-						"type": "Expression"
-					},
-					"authentication": {
-						"type": "MSI",
-						"resource": "https://storage.azure.com"
+					"waitOnCompletion": true,
+					"parameters": {
+						"jsonContent": {
+							"value": "@variables('jsonString')",
+							"type": "Expression"
+						},
+						"pFileName": "SobjectList"
 					}
 				}
 			}
