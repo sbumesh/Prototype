@@ -198,9 +198,9 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "jsonString",
+					"variableName": "jsonSobjectList",
 					"value": {
-						"value": "@activity('get lsit of Sobject').output",
+						"value": "@replace(activity('get lsit of Sobject').output,'\\n','')",
 						"type": "Expression"
 					}
 				}
@@ -259,6 +259,9 @@
 				"type": "String"
 			},
 			"jsonString": {
+				"type": "String"
+			},
+			"jsonSobjectList": {
 				"type": "String"
 			}
 		},
