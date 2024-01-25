@@ -225,7 +225,7 @@
 					"waitOnCompletion": true,
 					"parameters": {
 						"jsonContent": {
-							"value": "@variables('jsonString')",
+							"value": "@variables('jsonSobjectList')",
 							"type": "Expression"
 						},
 						"pFileName": "sfSobjecListRaw"
