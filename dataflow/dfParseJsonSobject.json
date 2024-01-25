@@ -31,7 +31,7 @@
 			],
 			"scriptLines": [
 				"parameters{",
-				"     outFile as string,",
+				"     outFile as string ('out.csv'),",
 				"     pFilename as string ('sobjects_raw.json')",
 				"}",
 				"source(output(",
