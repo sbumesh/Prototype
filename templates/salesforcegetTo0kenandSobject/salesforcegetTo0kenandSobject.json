@@ -1,0 +1,344 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/salesforcegetTo0ken2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Web1",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/x-www-form-urlencoded"
+							},
+							"url": {
+								"value": "@pipeline().parameters.url",
+								"type": "Expression"
+							},
+							"body": {
+								"value": "@pipeline().parameters.body",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set variable entire Json string",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Web1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "jsonString",
+							"value": {
+								"value": "@{activity('Web1').output}",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "set variable accesstoken",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Web1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "AccessToken",
+							"value": {
+								"value": "@activity('Web1').output.access_token",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "get lsit of Sobject",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "set variable accesstoken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {
+								"Accept": "application/json",
+								"Authorization": {
+									"value": "@concat('Bearer ' , variables('AccessToken')    )",
+									"type": "Expression"
+								}
+							},
+							"url": {
+								"value": "https://d5w0000050tsiea2-dev-ed.my.salesforce.com/services/data/v48.0/sobjects",
+								"type": "Expression"
+							},
+							"body": {
+								"value": "@pipeline().parameters.body",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "set variable accesstoken",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.sObjectList",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "sobject describe",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "GET",
+										"headers": {
+											"Accept": "application/json",
+											"Authorization": {
+												"value": "@concat('Bearer ' , variables('AccessToken')    )",
+												"type": "Expression"
+											}
+										},
+										"url": {
+											"value": "@concat('https://d5w0000050tsiea2-dev-ed.my.salesforce.com/services/data/v48.0/sobjects/',item(),'/describe')",
+											"type": "Expression"
+										},
+										"body": {
+											"value": "@pipeline().parameters.body",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "write Key Json file to output_copy1",
+									"type": "WebActivity",
+									"dependsOn": [
+										{
+											"activity": "sobject describe",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "PUT",
+										"headers": {
+											"x-ms-version": "2017-11-09",
+											"x-ms-blob-type": "BlockBlob"
+										},
+										"url": {
+											"value": "@replace('https://salesforce69.blob.core.windows.net/contsalesforce/token.json', 'token.json',item())",
+											"type": "Expression"
+										},
+										"body": {
+											"value": "@activity('sobject describe').output",
+											"type": "Expression"
+										},
+										"authentication": {
+											"type": "MSI",
+											"resource": "https://storage.azure.com"
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "write Key Json file to output",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Web1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "PUT",
+							"headers": {
+								"x-ms-version": "2017-11-09",
+								"x-ms-blob-type": "BlockBlob"
+							},
+							"url": {
+								"value": "https://salesforce69.blob.core.windows.net/contsalesforce/token.json",
+								"type": "Expression"
+							},
+							"body": {
+								"value": "@activity('Web1').output",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://storage.azure.com"
+							}
+						}
+					},
+					{
+						"name": "wtriteSobjectList",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "get lsit of Sobject",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "PUT",
+							"headers": {
+								"x-ms-version": "2017-11-09",
+								"x-ms-blob-type": "BlockBlob"
+							},
+							"url": {
+								"value": "https://salesforce69.blob.core.windows.net/contsalesforce/sobjects.json",
+								"type": "Expression"
+							},
+							"body": {
+								"value": "@activity('get lsit of Sobject').output",
+								"type": "Expression"
+							},
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://storage.azure.com"
+							}
+						}
+					}
+				],
+				"parameters": {
+					"url": {
+						"type": "string",
+						"defaultValue": "https://d5w0000050tsiea2-dev-ed.my.salesforce.com/services/oauth2/token"
+					},
+					"body": {
+						"type": "string",
+						"defaultValue": "grant_type=password&client_id=3MVG95jctIhbyCpo.M5oBPNmMoXIoJEdLTtD9y5UqEWqmzhWCzLySRVZ.SS0Kr12DoRR_3nfxftySKlT0sMnx&client_secret=05393E3026C411587F41159D41D8FD848842A3511555425DD7288DB3D91BB9D3&username=Umesh.Srinivasaiah@sita.aero&password=S@lesForce!9"
+					},
+					"pWebFileName": {
+						"type": "string",
+						"defaultValue": "token.json"
+					},
+					"sObjectList": {
+						"type": "array",
+						"defaultValue": [
+							"Account",
+							"Contact"
+						]
+					}
+				},
+				"variables": {
+					"AccessToken": {
+						"type": "String"
+					},
+					"jsonString": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "salesforce"
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-01-25T01:42:52Z"
+			},
+			"dependsOn": []
+		}
+	]
+}
