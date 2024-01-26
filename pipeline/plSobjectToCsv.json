@@ -92,8 +92,7 @@
 					"sink": {
 						"type": "DelimitedTextSink",
 						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings",
-							"copyBehavior": "MergeFiles"
+							"type": "AzureBlobStorageWriteSettings"
 						},
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
@@ -122,11 +121,8 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "flattenoutJson",
-						"type": "DatasetReference",
-						"parameters": {
-							"outFile": "out.csv"
-						}
+						"referenceName": "sfCsvout",
+						"type": "DatasetReference"
 					}
 				]
 			}
