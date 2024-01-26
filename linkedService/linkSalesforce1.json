@@ -3,10 +3,12 @@
 	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"annotations": [],
-		"type": "AzureBlobStorage",
+		"type": "Salesforce",
 		"typeProperties": {
-			"connectionString": "DefaultEndpointsProtocol=https;AccountName=amadeusjson;EndpointSuffix=core.windows.net;",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDc0Q0NGOUZDLUJCNjktNDBBRi1BMjZFLUE4RkJGOUQ4QzUzRV9jYjQ1NGZkNi0yMThkLTRlZDYtOThiMy0zMjdmNDAyMzZjMWUiDQp9"
+			"environmentUrl": "https://login.salesforce.com",
+			"username": "Umesh.Srinivasaiah@sita.aero",
+			"apiVersion": "54.0",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDIwOTk0MDMzLUM0OUYtNDY4QS1CM0U3LUFEMjU1OTM3OUQzMF9iN2Q1ZTI3Yy1lMTFmLTRmYjctOGEwMC0zMDIzYWEwMjZmMjIiDQp9"
 		}
 	}
 }
