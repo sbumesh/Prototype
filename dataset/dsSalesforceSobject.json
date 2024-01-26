@@ -1,0 +1,24 @@
+{
+	"name": "dsSalesforceSobject",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "linkSalesforce1",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"sObject": {
+				"type": "string",
+				"defaultValue": "Account"
+			}
+		},
+		"annotations": [],
+		"type": "SalesforceObject",
+		"schema": [],
+		"typeProperties": {
+			"objectApiName": {
+				"value": "@dataset().sObject",
+				"type": "Expression"
+			}
+		}
+	}
+}

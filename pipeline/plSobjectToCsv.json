@@ -1,0 +1,78 @@
+{
+	"name": "plSobjectToCsv",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SalesforceSource",
+						"readBehavior": "query"
+					},
+					"dataset": {
+						"referenceName": "dsSalesforceSobject",
+						"type": "DatasetReference",
+						"parameters": {
+							"sObject": "Account"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "write Sobject descrive json to Blob",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "PUT",
+					"headers": {
+						"x-ms-version": "2017-11-09",
+						"x-ms-blob-type": "BlockBlob"
+					},
+					"url": {
+						"value": "@replace('https://salesforce69.blob.core.windows.net/contsalesforce/token12.json' ,'token12' , 'soqlAccount')",
+						"type": "Expression"
+					},
+					"body": {
+						"value": "@activity('Lookup1').output",
+						"type": "Expression"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://storage.azure.com"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "salesforce"
+		},
+		"annotations": [],
+		"lastPublishTime": "2024-01-25T01:53:27Z"
+	}
+}
