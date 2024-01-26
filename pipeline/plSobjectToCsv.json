@@ -30,8 +30,8 @@
 				}
 			},
 			{
-				"name": "write Sobject descrive json to Blob",
-				"type": "WebActivity",
+				"name": "Execute Pipeline1",
+				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
 						"activity": "Lookup1",
@@ -40,89 +40,21 @@
 						]
 					}
 				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"method": "PUT",
-					"headers": {
-						"x-ms-version": "2017-11-09",
-						"x-ms-blob-type": "BlockBlob"
+					"pipeline": {
+						"referenceName": "Pl_StoreJSonFile_objectremoveLine",
+						"type": "PipelineReference"
 					},
-					"url": {
-						"value": "@replace('https://salesforce69.blob.core.windows.net/contsalesforce/token12.json' ,'token12' , 'soqlAccount')",
-						"type": "Expression"
-					},
-					"body": {
-						"value": "@activity('Lookup1').output",
-						"type": "Expression"
-					},
-					"authentication": {
-						"type": "MSI",
-						"resource": "https://storage.azure.com"
+					"waitOnCompletion": true,
+					"parameters": {
+						"jsonContent": {
+							"value": "@activity('Lookup1').output",
+							"type": "Expression"
+						},
+						"pFileName": "looklup.json"
 					}
 				}
-			},
-			{
-				"name": "Copy data1",
-				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "SalesforceSource",
-						"readBehavior": "query"
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "dsSalesforceSobject",
-						"type": "DatasetReference",
-						"parameters": {
-							"sObject": "Account"
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "sfCsvout",
-						"type": "DatasetReference"
-					}
-				]
 			}
 		],
 		"folder": {
