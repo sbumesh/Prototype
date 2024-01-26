@@ -70,7 +70,7 @@
 				"typeProperties": {
 					"variableName": "text",
 					"value": {
-						"value": "@activity('Lookup1').output.value",
+						"value": "@activity('Lookup1').output.value.Name",
 						"type": "Expression"
 					}
 				}
