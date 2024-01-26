@@ -128,8 +128,11 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "sfCsvout",
-						"type": "DatasetReference"
+						"referenceName": "flattenoutJson",
+						"type": "DatasetReference",
+						"parameters": {
+							"outFile": "out.csv"
+						}
 					}
 				]
 			}
