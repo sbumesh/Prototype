@@ -1,3 +1,8 @@
+url=https://sbumesh.atlassian.net
+"https://sbumesh.atlassian.net/rest/api/2/search"
+userid=sbumesh@gmail.com
+token=ATATT3xFfGF0OVD6_EPefWsgK_HxrvCxDgpkMb7h9V22rE3Plpatd1-KNvwD2HOLbUBVEMoI52bGPxgwH0q8bEI9EIpNF3e0IQNhJnDIPakYs1c-AHhlNGvI9hmof7oTNw_aUEJ6S7kwK7jpQB7-pNrNuCPYO8mnoIVhzM2aBxpaAQYHTid__0g=2D5C7374
+
 AJSAUDIT
 AJSCONT
 AJSEXCEPT
